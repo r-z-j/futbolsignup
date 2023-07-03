@@ -1,0 +1,35 @@
+<% layout('layouts/boilerplate') %>
+
+    <div class="row">
+        <div class="col-10 offset-1">
+            <h1>All Games</h1>
+            <div>
+                <a href="/games/new">add game</a>
+            </div>
+
+            <% for(let game of games) { %>
+                <div class="card mt-3 ">
+                    <h5 class="card-header d-flex">
+                        <span>
+                        <%= game.gameDate.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short",
+                            day:"numeric", timeZone: 'UTC' }) %>
+                        </span>
+
+                    </h5>
+                    <div class="card-body justify-content-end">
+                        <h5 class="card-title">
+                            <%= game.location %>
+                        </h5>
+                        <p class="card-text">
+                            Players: <%= game.players.length %>/15
+                        </p>
+                        <p class="card-text">
+                            Waitlist: <%= game.waitlist %>
+                        </p>
+                        <a href="/games/<%= game._id %>" class="btn btn-secondary float-end mx-2">View Game</a>
+                    </div>
+                </div>
+
+                <% }%>
+        </div>
+    </div>

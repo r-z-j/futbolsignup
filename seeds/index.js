@@ -16,6 +16,7 @@ db.once("open", () => {
 
 const seedDB = async () => {
     await Game.deleteMany({});
+    await User.deleteMany({});
     let d = Date.now();
     for (let i = 1; i <= 20; i++) {
         const g = new Game({
@@ -34,7 +35,14 @@ const seedDB = async () => {
             role: "admin",
         });
         const registeredUser = await User.register(admin, "admin");
-        console.log(registeredUser);
+        for (let i = 0; i < 30; i++) {
+            let u = new User({
+                email: i + "@" + i + ".com",
+                username: "" + i,
+                role: "user",
+            });
+            await User.register(u, "p");
+        }
     } catch (e) {
         console.log(e);
     }

@@ -80,6 +80,8 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(3000, () => {
+    let date = new Date();
     console.log("serving on port 3000");
     console.log("http://localhost:3000/games");
+    console.log(date.toLocaleString("en-US"));
 });

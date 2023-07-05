@@ -1,0 +1,61 @@
+<% layout('layouts/boilerplate') %>
+    <div class="row">
+        <h1 class="text-center">Edit Profile</h1>
+        <div class="col-6">
+
+            <form style="display:inline" action="/profile/<%= user._id %>?_method=PUT" method="POST"
+                class="validated-form" novalidate>
+
+                <div class="mb-3">
+                    <label class="form-label" for="username">username</label>
+                    <input class="form-control" type="text" id="username" name="username" value="<%= user.username %>"
+                        required>
+                    <div class="valid-feedback"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="email">email</label>
+                    <input class="form-control" type="email" id="email" name="email" value="<%= user.email %>" required>
+                    <div class="valid-feedback"></div>
+                </div>
+                <button class="btn btn-secondary">update</button>
+            </form>
+ <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        change password
+    </button>
+        </div>
+    </div>
+
+    <!-- Button trigger modal -->
+   
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">change password</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+<form style="display:inline" action="/profile/<%= user._id %>?_method=PUT" method="POST"
+                class="validated-form" novalidate>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label" for="password">new password</label>
+                        <input class="form-control" type="password" id="password" name="password" required>
+                        <div class="valid-feedback">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="confirmPassword">confirm password</label>
+                        <input class="form-control" type="password" id="confirmPassword" name="confirmPassword" required>
+                        <div class="valid-feedback">
+                        </div>
+                    </div>
+   <button class="btn btn-secondary">update</button>
+            </form>
+                </div>
+                <div class="modal-footer">
+                    
+                </div>
+            </div>
+        </div>

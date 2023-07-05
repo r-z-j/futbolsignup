@@ -4,6 +4,7 @@ const ExpressError = require("../utils/ExpressError");
 const catchAsync = require("../utils/catchAsync");
 const { gameSchema } = require("../schemas");
 const { isLoggedIn, isAdmin } = require("../middleware");
+const nodemailer = require("nodemailer");
 const Game = require("../models/game");
 const User = require("../models/user");
 
@@ -24,6 +25,9 @@ router.get(
             .populate("players")
             .populate("waitlist")
             .exec();
+        games.sort(function (a, b) {
+            return a.gameDate.getTime() - b.gameDate.getTime();
+        });
         res.render("games/index", { games });
     })
 );
@@ -89,7 +93,16 @@ router.delete(
     isLoggedIn,
     catchAsync(async (req, res) => {
         const { id } = req.params;
-        await Game.findByIdAndDelete(id);
+        const game = await Game.findByIdAndDelete(id).populate("players");
+        for (let user of game.players) {
+            let j = user.activeGames.findIndex(
+                (object) =>
+                    JSON.stringify(object._id) === JSON.stringify(game._id)
+            );
+            user.activeGames.splice(j, 1);
+            await user.save();
+        }
+
         res.redirect("/games");
     })
 );
@@ -99,21 +112,21 @@ router.post(
     isLoggedIn,
     catchAsync(async (req, res) => {
         const { id } = req.params;
-        const game = await Game.findById(id).populate("players").exec();
+        const game = await Game.findById(id).populate("players");
         const user = await User.findById(req.user._id);
-        let contains = game.players.some((elem) => {
-            return JSON.stringify(user._id) === JSON.stringify(elem._id);
-        });
-        if (contains) {
-            await game.players.pop(user);
-            await game.save();
-            req.flash("success", "Removed from game");
-            res.redirect(`/games/${game._id}`);
-        } else {
-            game.players.push(user);
+        let playersIndex = game.players.findIndex(
+            (object) => JSON.stringify(object._id) === JSON.stringify(user._id)
+        );
+        let gamesIndex = user.activeGames.findIndex(
+            (object) => JSON.stringify(object._id) === JSON.stringify(game._id)
+        );
+
+        if (playersIndex >= 0) {
+            game.players.splice(playersIndex, 1);
+            user.activeGames.splice(gamesIndex, 1);
+            await user.save();
             await game.save();
         }
-        req.flash("success", "Successfully signed up for game");
         res.redirect(`/games/${game._id}`);
     })
 );
@@ -123,7 +136,7 @@ router.post(
     isLoggedIn,
     catchAsync(async (req, res) => {
         const { id } = req.params;
-        const game = await Game.findById(id).populate("players").exec();
+        const game = await Game.findById(id).populate("players");
         const user = await User.findById(req.user._id);
         let contains = game.players.some((elem) => {
             return JSON.stringify(user._id) === JSON.stringify(elem._id);
@@ -132,10 +145,47 @@ router.post(
             req.flash("error", "Already signed up for this game");
             res.redirect(`/games/${game._id}`);
         } else {
-            game.players.push(user);
+            await game.players.push(user);
             await game.save();
+            await user.activeGames.push(game);
+            await user.save();
+            res.redirect(`/games/${game._id}`);
         }
-        req.flash("success", "Successfully signed up for game");
+    })
+);
+
+router.post(
+    "/email/:id",
+    isAdmin,
+    catchAsync(async (req, res) => {
+        const { id } = req.params;
+        const game = await Game.findById(id).populate("players");
+        const { message } = req.body;
+
+        for (player of game.players) {
+            const transporter = nodemailer.createTransport({
+                service: "fastmail",
+                auth: {
+                    user: "futbolsignup@sent.com",
+                    pass: "f6wuhanq7gsq8r97",
+                },
+            });
+
+            let mailOptions = {
+                from: "futbolsignup@sent.com",
+                to: player.email,
+                subject: "Teams",
+                text: message,
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log("Email sent: " + info.response);
+                }
+            });
+        }
         res.redirect(`/games/${game._id}`);
     })
 );

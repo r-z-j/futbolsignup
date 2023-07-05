@@ -2,18 +2,20 @@
 
     <div class="row">
         <div class="col-10 offset-1">
-            <h1>All Games</h1>
-            <div>
-                <a href="/games/new">add game</a>
-            </div>
+            <h2>Upcoming Games</h2>
+           
 
             <% for(let game of games) { %>
                 <div class="card mt-3 ">
-                    <h5 class="card-header d-flex">
+                    <h5 class="card-header d-flex justify-content-between">
                         <span>
                         <%= game.gameDate.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short",
                             day:"numeric", timeZone: 'UTC' }) %>
                         </span>
+
+                        <% if (game.players.length > 15) { %>
+                            <span class="badge text-bg-info mx-6">Full</span>
+                        <% } %>
 
                     </h5>
                     <div class="card-body justify-content-end">
@@ -21,10 +23,10 @@
                             <%= game.location %>
                         </h5>
                         <p class="card-text">
-                            Players: <%= game.players.length %>/15
+                            Players: <%= game.players.length > 15 ? 15 : game.players.length %>/15
                         </p>
                         <p class="card-text">
-                            Waitlist: <%= game.waitlist %>
+                            Waitlist: <%= game.players.length > 15 ? game.players.length - 15 : 0 %>
                         </p>
                         <a href="/games/<%= game._id %>" class="btn btn-secondary float-end mx-2">View Game</a>
                     </div>

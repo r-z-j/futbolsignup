@@ -180,8 +180,10 @@ router.post(
 
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
+					req.flash("error", "Error sending email");
                     console.log(error);
                 } else {
+					req.flash("success", "Emails sent!");
                     console.log("Email sent: " + info.response);
                 }
             });

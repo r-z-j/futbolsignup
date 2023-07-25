@@ -4,7 +4,7 @@ Simple web application that helps organize soccer games!
 
 Key Features: 
 - Admins can create and edit games
-- Notify users signed up for a spefic game via email using third-party email API
+- Automated email notifications for users that are signed up
 - Users can modify personal account details and password
 
 Stack:

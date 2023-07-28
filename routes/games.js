@@ -7,6 +7,7 @@ const { isLoggedIn, isAdmin } = require("../middleware");
 const nodemailer = require("nodemailer");
 const Game = require("../models/game");
 const User = require("../models/user");
+const emailPassword = process.env.EMAIL_PASS;
 
 const validateGame = (req, res, next) => {
     const { error } = gameSchema.validate(req.body);
@@ -167,7 +168,7 @@ router.post(
                 service: "fastmail",
                 auth: {
                     user: "futbolsignup@sent.com",
-                    pass: "f6wuhanq7gsq8r97",
+                    pass: emailPassword,
                 },
             });
 

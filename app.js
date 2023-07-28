@@ -148,9 +148,10 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render("error", { err });
 });
 
-app.listen(3000, () => {
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
     let date = new Date();
-    console.log("serving on port 3000");
-    console.log("http://localhost:3000/games");
+    console.log(`serving on port ${port}`);
+    console.log("http://localhost:3000");
     console.log(date.toLocaleString("en-US"));
 });

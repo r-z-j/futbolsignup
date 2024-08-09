@@ -3,11 +3,13 @@
         <div class="container d-flex justify-content-center">
             <div class="card" style="width: 40rem;">
                 <img src="images/logo.png" class="card-img-top" alt="...">
-                <div class="card-body text-center">
-                    <p class="card-text">Welcome to Fútbol Signup</p>
-                </div>
                 <div class="card-body">
+
+                <% if(!currentUser){ %>
                     <a href="/login" class="card-link">login</a>
+                <% } else { %>
+                    Welcome, <a href="/profile/<%= currentUser._id %>"><%= currentUser.username %></a>
+                <% } %>
                     <a href="/games" class="card-link float-end">view games</a>
                 </div>
             </div>

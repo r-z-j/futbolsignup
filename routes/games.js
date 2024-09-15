@@ -145,6 +145,9 @@ router.post(
         if (contains) {
             req.flash("error", "Already signed up for this game");
             res.redirect(`/games/${game._id}`);
+        } else if (!user.verified) {
+            req.flash("error", "User is not verified");
+            res.redirect(`/games/${game._id}`);
         } else {
             await game.players.push(user);
             await game.save();
@@ -181,10 +184,10 @@ router.post(
 
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
-					req.flash("error", "Error sending email");
+                    req.flash("error", "Error sending email");
                     console.log(error);
                 } else {
-					req.flash("success", "Emails sent!");
+                    req.flash("success", "Emails sent!");
                     console.log("Email sent: " + info.response);
                 }
             });

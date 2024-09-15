@@ -1,0 +1,74 @@
+<% layout('layouts/boilerplate') %>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Upcoming Games Table -->
+        <div class="col-md-6">
+            <h1 class="mb-4">Upcoming Games</h1>
+            <% games.forEach(game => { %>
+                <h5 class="text-info">
+                    <a href="/games/<%= game._id %>" class="text-info">
+                        Game on <%= new Date(game.gameDate).toLocaleDateString() %> at <%= game.gameTime %>
+                    </a>
+                </h5>
+                <table class="table table-bordered table-sm mb-4">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Players</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><%= game.description.replace(/\r?\n/g, '<br>') %></td>
+                            <td>
+                                <ul class="list-unstyled">
+                                    <% game.players.forEach(player => { %>
+                                        <li><%= player.username %> (<%= player.email %>) - <%= player.role %></li>
+                                    <% }) %>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            <% }) %>
+        </div>
+
+        <!-- Users Table -->
+       <div class="col-md-6">
+    <h1 class="mb-4">Users</h1>
+    <table class="table table-bordered table-sm">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Verified</th>
+                <th class="text-center">Action</th> <!-- Center column header -->
+            </tr>
+        </thead>
+        <tbody>
+            <% users.forEach(user => { %>
+                <form action="/admin/verify-user/<%= user._id %>" method="POST">
+                    <tr>
+                        <td><%= user.username %></td>
+                        <td><%= user.email %></td>
+                        <td>
+                            Verified: <%= user.verified ? 'Yes' : 'No' %>
+                        </td>
+                        <td class="text-center">
+                            <button type="submit" class="btn btn-info btn-sm w-100" name="verified" value="<%= !user.verified %>">
+                                <%= user.verified ? 'Unverify' : 'Verify' %>
+                            </button>
+                        </td>
+                    </tr>
+                </form>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+    </div>
+</div>
+

@@ -27,6 +27,10 @@ const UserSchema = new Schema({
             },
         },
     ],
+	verified: {
+        type: Boolean,
+        default: false, 
+    },
 });
 
 UserSchema.plugin(passportLocalMongoose);

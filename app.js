@@ -20,6 +20,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 
 const userRoutes = require("./routes/users");
 const gameRoutes = require("./routes/games");
+const adminRoutes = require("./routes/admin");
 
 //const dbUrl = process.env.DB_URL;
 const MongoStore = require("connect-mongo");
@@ -134,6 +135,7 @@ app.use((req, res, next) => {
 
 app.use("/", userRoutes);
 app.use("/games", gameRoutes);
+app.use("/admin", adminRoutes);
 
 app.get("/", (req, res) => {
     res.render("home");
